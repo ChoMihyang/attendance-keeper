@@ -110,12 +110,11 @@ async def get_account(body: Auth, status_code=status.HTTP_200_OK):
         print("error", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="スタッフが見つかりませんでした"
+            detail="権限取得に失敗しました"
         )
     return {
-        "message": "登録に成功しました",
+        "message": "権限取得に成功しました",
         "staff": {
             "auth": response['auth']
         }
     }
-
