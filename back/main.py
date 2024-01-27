@@ -76,7 +76,7 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
 
 # ログインAPI作成
 @app.post("/api/login")
-async def register_staff(body: LoginData, status_code=status.HTTP_200_OK):
+async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
     try:
         sql = "SELECT password FROM staff WHERE staff_id = {}".format(body.staff_id)
         cur.execute(sql)
