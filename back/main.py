@@ -42,6 +42,11 @@ class LoginData(BaseModel):
     staff_id: int
     password: str
 
+class Auth(BaseModel):
+    staff_id: int
+
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello!"}
@@ -76,7 +81,7 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
 
 # ログインAPI作成
 @app.post("/api/login")
-async def register_staff(body: LoginData, status_code=status.HTTP_200_OK):
+async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
     try:
         sql = "SELECT password FROM staff WHERE staff_id = {}".format(body.staff_id)
         cur.execute(sql)
@@ -90,6 +95,27 @@ async def register_staff(body: LoginData, status_code=status.HTTP_200_OK):
     except Exception as e:
         print("error", e)
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="ログインに失敗しました"
         )
+
+# スタッフの権限情報を取得するAPI作成
+@app.get("/api/account")
+async def get_account(body: Auth, status_code=status.HTTP_200_OK):
+    try:
+        sql = "SELECT auth FROM staff WHERE staff_id = {}".format(body.staff_id)
+        cur.execute(sql)
+        response = cur.fetchone()
+    except Exception as e:
+        print("error", e)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="スタッフが見つかりませんでした"
+        )
+    return {
+        "message": "登録に成功しました",
+        "staff": {
+            "auth": response['auth']
+        }
+    }
+
