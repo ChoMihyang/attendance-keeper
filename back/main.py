@@ -1,8 +1,9 @@
-from fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException, Form
 import os
 from dotenv import load_dotenv
 import pymysql
 from pydantic import BaseModel
+from typing import Annotated
 
 load_dotenv()
 
@@ -36,8 +37,16 @@ class Staff(BaseModel):
     staff_id: int
     auth: str
     password: str
+    
+class LoginData(BaseModel):
+    staff_id: int
+    password: str
 
-# スタッフを登録する API作成
+@app.get("/")
+async def root():
+    return {"message": "Hello!"}
+
+# スタッフを登録するAPI作成
 @app.post("/api/register")
 async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
     try:
@@ -63,4 +72,24 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
             "password": body.password
         }
     }
-    
+
+
+# ログインAPI作成
+@app.post("/api/login")
+async def register_staff(body: LoginData, status_code=status.HTTP_200_OK):
+    try:
+        sql = "SELECT password FROM staff WHERE staff_id = {}".format(body.staff_id)
+        cur.execute(sql)
+        response = cur.fetchone()
+        if response['password'] != body.password:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="ログインに失敗しました"
+            )
+        return {"message": "ログインに成功しました"}
+    except Exception as e:
+        print("error", e)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="ログインに失敗しました"
+        )
