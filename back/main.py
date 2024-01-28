@@ -44,6 +44,7 @@ class LoginData(BaseModel):
     staff_id: int
     password: str
 
+
 class StaffId(BaseModel):
     staff_id: int
 
@@ -52,6 +53,7 @@ class Attendance(BaseModel):
     date: str
     attendance_start_time: str
     attendance_end_time: str
+
 
 
 @app.get("/")
@@ -212,4 +214,3 @@ async def get_attendance_one(staff_id: int):
             "message": "{} スタッフの出退勤情報の取得に成功しました".format(staff_id),
             "result":response
     }
-
