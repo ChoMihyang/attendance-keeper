@@ -106,6 +106,7 @@ async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
             detail="ログインに失敗しました"
         )
 
+
 # スタッフの権限情報を取得するAPI作成
 @app.get("/api/account")
 async def get_account(body: StaffId, status_code=status.HTTP_200_OK):
@@ -211,3 +212,4 @@ async def get_attendance_one(staff_id: int):
             "message": "{} スタッフの出退勤情報の取得に成功しました".format(staff_id),
             "result":response
     }
+
