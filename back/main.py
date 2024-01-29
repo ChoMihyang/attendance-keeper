@@ -16,7 +16,7 @@ def mysql_create_session():
     try:
         conn = pymysql.connect(
             host=os.getenv("DB_URL"),
-            user=os.getenv("USER"),
+            user=os.getenv("DB_USER"),
             password=os.getenv("PASSWORD"),
             db=os.getenv("DB_NAME"),
             charset="utf8",
