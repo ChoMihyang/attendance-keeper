@@ -1,4 +1,5 @@
 from fastapi import FastAPI, status, HTTPException, Form
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 import pymysql
@@ -8,6 +9,7 @@ from datetime import datetime
 
 
 load_dotenv()
+
 
 def mysql_create_session():
     conn = None
@@ -26,12 +28,21 @@ def mysql_create_session():
     except pymysql.err.OperationalError as e:
         print("error", e)
         exit(1)
-    
+
     print("DB connected")
     return conn, cur
 
+
 conn, cur = mysql_create_session()
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class Staff(BaseModel):
@@ -39,7 +50,8 @@ class Staff(BaseModel):
     staff_id: int
     auth: str
     password: str
-    
+
+
 class LoginData(BaseModel):
     staff_id: int
     password: str
@@ -48,6 +60,7 @@ class LoginData(BaseModel):
 class StaffId(BaseModel):
     staff_id: int
 
+
 class Attendance(BaseModel):
     staff_id: int
     date: str
@@ -55,12 +68,13 @@ class Attendance(BaseModel):
     attendance_end_time: str
 
 
-
 @app.get("/")
 async def root():
     return {"message": "Hello!"}
 
 # スタッフを登録するAPI作成
+
+
 @app.post("/api/register")
 async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
     try:
@@ -74,7 +88,6 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="登録に失敗しました"
         )
-    
 
     return {
         "message": "登録に成功しました",
@@ -91,15 +104,17 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
 # ログインAPI作成
 @app.post("/api/login")
 async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
+    print(body.staff_id)
     try:
-        sql = "SELECT password FROM staff WHERE staff_id = {}".format(body.staff_id)
+        sql = "SELECT password FROM staff WHERE staff_id = {}".format(
+            body.staff_id)
         cur.execute(sql)
         response = cur.fetchone()
         if response['password'] != body.password:
-            return { 
+            return {
                 "message": "IDまたはパスワードが間違っています"
-                }
-            
+            }
+
         return {"message": "ログインに成功しました"}
     except Exception as e:
         print("error", e)
@@ -113,7 +128,8 @@ async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
 @app.get("/api/account")
 async def get_account(body: StaffId, status_code=status.HTTP_200_OK):
     try:
-        sql = "SELECT auth FROM staff WHERE staff_id = {}".format(body.staff_id)
+        sql = "SELECT auth FROM staff WHERE staff_id = {}".format(
+            body.staff_id)
         cur.execute(sql)
         response = cur.fetchone()
     except Exception as e:
@@ -130,6 +146,8 @@ async def get_account(body: StaffId, status_code=status.HTTP_200_OK):
     }
 
 # 出勤時間を記録するAPI作成
+
+
 @app.post("/api/attendance")
 async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
     try:
@@ -154,6 +172,8 @@ async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
     }
 
 # 退勤時間を記録するAPI作成
+
+
 @app.patch("/api/attendance")
 async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
     try:
@@ -175,7 +195,7 @@ async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
             "attendance_start_time": body.attendance_start_time,
             "attendance_end_time": end_datetime
         }
-    }   
+    }
 
 
 # 出退勤情報を取得するAPI作成
@@ -183,7 +203,8 @@ async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
 async def get_attendance_all():
     try:
         date = datetime.now().strftime('%Y-%m-%d')
-        sql = "SELECT staff.name, attendance.staff_id, attendance.attendance_start_time, attendance.attendance_end_time FROM attendance LEFT OUTER JOIN staff ON staff.staff_id = attendance.staff_id where date = {}".format(date)
+        sql = "SELECT staff.name, attendance.staff_id, attendance.attendance_start_time, attendance.attendance_end_time FROM attendance LEFT OUTER JOIN staff ON staff.staff_id = attendance.staff_id where date = {}".format(
+            date)
         cur.execute(sql)
         response = cur.fetchall()
     except Exception as e:
@@ -193,15 +214,18 @@ async def get_attendance_all():
             detail="出退勤情報取得に失敗しました"
         )
     return {
-            "message": "出退勤情報取得に成功しました",
-            "result":response
+        "message": "出退勤情報取得に成功しました",
+        "result": response
     }
 
 # 特定スタッフの出退勤情報を取得するAPI作成
+
+
 @app.get("/api/attendance/{staff_id}")
 async def get_attendance_one(staff_id: int):
     try:
-        sql = "SELECT date, attendance_start_time, attendance_end_time FROM attendance WHERE staff_id = {}".format(staff_id)
+        sql = "SELECT date, attendance_start_time, attendance_end_time FROM attendance WHERE staff_id = {}".format(
+            staff_id)
         cur.execute(sql)
         response = cur.fetchall()
     except Exception as e:
@@ -211,6 +235,6 @@ async def get_attendance_one(staff_id: int):
             detail="{} スタッフの出退勤情報の取得に失敗しました".format(staff_id)
         )
     return {
-            "message": "{} スタッフの出退勤情報の取得に成功しました".format(staff_id),
-            "result":response
+        "message": "{} スタッフの出退勤情報の取得に成功しました".format(staff_id),
+        "result": response
     }
