@@ -17,29 +17,16 @@
 
     const handleChange = (event) => {
         if (event.target.name === "staffId") {
-        setStaffId(parseInt(event.target.value));
+        setStaffId(event.target.value);
         } else if (event.target.name === "password") {
         setPassword(event.target.value);
         }
-        console.log(typeof(staffId), password);
     };
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        try{
-            const response = await fetch('http://localhost:8000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ staffId: staffId, password: password })
-            });
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        requestLoginData({ staff_id: staffId, password: password });
     };
-    
+
     const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -47,7 +34,6 @@
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-
 
     return (
         <Container maxWidth="sm">
@@ -105,5 +91,24 @@
         </Container>
     );
     }
-
+    async function requestLoginData(loginData) {
+    console.log("dd", loginData);
+    try {
+        const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+        });
+        const data = await response.json();
+        if(data.message === "success"){
+            console.log("ログインに成功しました");
+        }else{
+            alert("IDまたはパスワードをもう一度ご確認ください。");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
 export default Login;

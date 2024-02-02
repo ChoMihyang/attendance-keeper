@@ -1,11 +1,12 @@
-from fastapi import FastAPI, status, HTTPException, Form
+from fastapi import FastAPI, status, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 import pymysql
 from pydantic import BaseModel
-from typing import Annotated
 from datetime import datetime
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 
 load_dotenv()
@@ -44,6 +45,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.exception_handler(RequestValidationError)
+async def handler(request:Request, exc:RequestValidationError):
+    print(exc)
+    return JSONResponse(content={}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 class Staff(BaseModel):
     name: str
@@ -53,7 +58,7 @@ class Staff(BaseModel):
 
 
 class LoginData(BaseModel):
-    staff_id: int
+    staff_id: str
     password: str
 
 
@@ -73,8 +78,6 @@ async def root():
     return {"message": "Hello!"}
 
 # スタッフを登録するAPI作成
-
-
 @app.post("/api/register")
 async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
     try:
@@ -104,7 +107,6 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
 # ログインAPI作成
 @app.post("/api/login")
 async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
-    print(body.staff_id)
     try:
         sql = "SELECT password FROM staff WHERE staff_id = {}".format(
             body.staff_id)
@@ -115,7 +117,7 @@ async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
                 "message": "IDまたはパスワードが間違っています"
             }
 
-        return {"message": "ログインに成功しました"}
+        return {"message": "success"}
     except Exception as e:
         print("error", e)
         raise HTTPException(
@@ -146,8 +148,6 @@ async def get_account(body: StaffId, status_code=status.HTTP_200_OK):
     }
 
 # 出勤時間を記録するAPI作成
-
-
 @app.post("/api/attendance")
 async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
     try:
@@ -172,8 +172,6 @@ async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
     }
 
 # 退勤時間を記録するAPI作成
-
-
 @app.patch("/api/attendance")
 async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
     try:
