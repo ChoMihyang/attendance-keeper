@@ -1,5 +1,5 @@
-    import React, { useState } from "react";
-    import {
+import React, { useState } from "react";
+import {
     Container,
     TextField,
     Button,
@@ -8,10 +8,10 @@
     OutlinedInput,
     InputAdornment,
     IconButton,
-    } from "@mui/material";
-    import { Visibility, VisibilityOff } from "@mui/icons-material";
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-    function Login() {
+function Login() {
     const [staffId, setStaffId] = useState("");
     const [password, setPassword] = useState("");
 
@@ -93,23 +93,23 @@
 }
 
 function requestLoginData(loginData) {
-  fetch("http://localhost:8000/api/login", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify(loginData),
-  })
+    fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+    })
     .then((response) => response.json())
     .then((data) => {
-      if(data.message === "success"){
-        console.log("ログインに成功しました");
-          }else{
+        if(data.message === "success"){
+            console.log("ログインに成功しました");
+        }else{
             alert("IDまたはパスワードをもう一度ご確認ください。");
-          }
+        }
     })
     .catch ((error) => {
-      console.error("Error:", error);
+        console.error("Error:", error);
     });
 }
 export default Login;

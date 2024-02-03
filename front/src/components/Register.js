@@ -9,7 +9,6 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 
 function Register() {
   const [name, setName] = useState("");
