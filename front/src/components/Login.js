@@ -90,24 +90,26 @@
         </div>
         </Container>
     );
-    }
-    async function requestLoginData(loginData) {
-    try {
-        const response = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-        });
-        const data = await response.json();
-        if(data.message === "success"){
-            console.log("ログインに成功しました");
-        }else{
+}
+
+function requestLoginData(loginData) {
+  fetch("http://localhost:8000/api/login", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if(data.message === "success"){
+        console.log("ログインに成功しました");
+          }else{
             alert("IDまたはパスワードをもう一度ご確認ください。");
-        }
-    } catch (error) {
-        console.error("Error:", error);
-    }
+          }
+    })
+    .catch ((error) => {
+      console.error("Error:", error);
+    });
 }
 export default Login;
