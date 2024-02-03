@@ -17,9 +17,9 @@
 
     const handleChange = (event) => {
         if (event.target.name === "staffId") {
-        setStaffId(event.target.value);
+            setStaffId(event.target.value);
         } else if (event.target.name === "password") {
-        setPassword(event.target.value);
+            setPassword(event.target.value);
         }
     };
     const handleSubmit = (event) => {
@@ -92,7 +92,6 @@
     );
     }
     async function requestLoginData(loginData) {
-    console.log("dd", loginData);
     try {
         const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",

@@ -52,7 +52,7 @@ async def handler(request:Request, exc:RequestValidationError):
 
 class Staff(BaseModel):
     name: str
-    staff_id: int
+    staff_id: str
     auth: str
     password: str
 
@@ -78,12 +78,12 @@ async def root():
     return {"message": "Hello!"}
 
 # スタッフを登録するAPI作成
+# TODO: ランダムパスワードの作成する
 @app.post("/api/register")
 async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
     try:
         sql = "INSERT INTO staff (name, staff_id, auth, password) VALUES (%s, %s, %s, %s)"
         cur.execute(sql, (body.name, body.staff_id, body.auth, body.password))
-
         conn.commit()
     except Exception as e:
         print("error", e)
@@ -93,13 +93,9 @@ async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
         )
 
     return {
-        "message": "登録に成功しました",
+        "message": "success",
         "staff": {
-            "id": cur.lastrowid,
-            "name": body.name,
-            "staff_id": body.staff_id,
-            "auth": body.auth,
-            "password": body.password
+            # 初期パスワードを返す
         }
     }
 
@@ -213,6 +209,7 @@ async def get_attendance_all():
         )
     return {
         "message": "出退勤情報取得に成功しました",
+
         "result": response
     }
 
