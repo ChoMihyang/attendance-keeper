@@ -6,11 +6,13 @@ import AttendanceButton from "./AttendanceButton";
 import requestAccount from "../api/requestAccount";
 import requestAttendanceOne from "../api/requestAttendanceOne";
 import AttendanceList from "./AttendanceList";
+import AttendanceListAll from "./AttendanceList/AttendanceListAll";
 import { styled } from "@mui/system";
 
-const StyledButtons = styled('div')({
-  display: 'flex',
-  justifyContent: 'flex-end',
+const StyledButtons = styled("div")({
+  display: "flex",
+  justifyContent: "flex-end",
+  marginBottom: "3rem",
 });
 
 function Home() {
@@ -20,7 +22,7 @@ function Home() {
   const [staff, setStaff] = useState(null);
   const [attendance, setAttendance] = useState([]);
   const navigate = useNavigate();
-  
+
   const handleChange = (_, newValue) => {
     setValue(newValue);
   };
@@ -46,7 +48,7 @@ function Home() {
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange}>
             <Tab label="Home" value="1" />
-            {staff.auth === "admin" && <Tab label="社員管理" value="2" />}
+            {staff.auth === "admin" && <Tab label="勤怠管理" value="2" />}
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -71,7 +73,7 @@ function Home() {
               to="/login"
               variant="outlined"
               size="large"
-              sx={{ width: "10rem", height: "3.2rem"}}
+              sx={{ width: "10rem", height: "3.2rem" }}
             >
               ログアウト
             </Button>
@@ -81,7 +83,20 @@ function Home() {
           )}
           {attendance && <AttendanceList attendance={attendance} />}
         </TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
+        <TabPanel value="2">
+          <StyledButtons>
+            <Button
+              component={Link}
+              to="/login"
+              variant="outlined"
+              size="large"
+              sx={{ width: "10rem", height: "3.2rem" }}
+            >
+              ログアウト
+            </Button>
+          </StyledButtons>
+          <AttendanceListAll />
+        </TabPanel>
       </TabContext>
     </div>
   ) : (
