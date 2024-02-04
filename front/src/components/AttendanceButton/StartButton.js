@@ -1,17 +1,14 @@
-import { Button, makeStyles } from "@mui/material";
+import { Button } from "@mui/material";
 import requestStart from "../../api/requestStart";
 
-function StartButton({ disabled }) {
+function StartButton({ disabled, staffId }) {
   const handleAttend = () => {
-    requestStart("240128001");
+    requestStart(staffId);
     window.location.reload(false);
   };
+  console.log(disabled);
   return (
-    <Button
-      disabled={disabled !== ""}
-      variant="contained"
-      onClick={handleAttend}
-    >
+    <Button disabled={disabled} variant="contained" onClick={handleAttend}>
       出勤
     </Button>
   );
