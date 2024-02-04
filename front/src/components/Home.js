@@ -5,6 +5,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import AttendanceButton from "./AttendanceButton";
 import requestAccount from "../api/requestAccount";
 import requestAttendanceOne from "../api/requestAttendanceOne";
+import AttendanceList from "./AttendanceList";
+import { styled } from "@mui/system";
+
+const StyledButtons = styled('div')({
+  display: 'flex',
+  justifyContent: 'flex-end',
+});
 
 function Home() {
   const HOME_TAB = "1";
@@ -13,6 +20,7 @@ function Home() {
   const [staff, setStaff] = useState(null);
   const [attendance, setAttendance] = useState([]);
   const navigate = useNavigate();
+  
   const handleChange = (_, newValue) => {
     setValue(newValue);
   };
@@ -27,7 +35,7 @@ function Home() {
       }
       setStaff(result.staff);
       const data = await requestAttendanceOne(staff_id);
-      setAttendance(data);
+      setAttendance(data.result);
     }
     fetchData();
   }, [staff_id]);
@@ -42,27 +50,36 @@ function Home() {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <AttendanceButton staffId={staff_id} todayAttendance={staff.data} />
-          {staff.auth === "admin" && (
+          <StyledButtons>
+            {staff.auth === "admin" && (
+              <Button
+                component={Link}
+                to="/register"
+                variant="contained"
+                size="large"
+                sx={{
+                  width: "10rem",
+                  height: "3.2rem",
+                  mr: "1rem",
+                }}
+              >
+                新規登録
+              </Button>
+            )}
             <Button
               component={Link}
-              to="/register"
-              variant="contained"
+              to="/login"
+              variant="outlined"
               size="large"
-              sx={{ width: "10rem", height: "3.2rem", my: "3rem", mr: "1rem" }}
+              sx={{ width: "10rem", height: "3.2rem"}}
             >
-              新規登録
+              ログアウト
             </Button>
+          </StyledButtons>
+          {staff.data && (
+            <AttendanceButton staffId={staff_id} todayAttendance={staff.data} />
           )}
-          <Button
-            component={Link}
-            to="/login"
-            variant="outlined"
-            size="large"
-            sx={{ width: "10rem", height: "3.2rem", my: "3rem" }}
-          >
-            ログアウト
-          </Button>
+          {attendance && <AttendanceList attendance={attendance} />}
         </TabPanel>
         <TabPanel value="2">Item Two</TabPanel>
       </TabContext>
