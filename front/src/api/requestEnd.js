@@ -1,6 +1,6 @@
-function requestStart(staff_id) {
-  fetch("http://localhost:8000/api/attendance", {
-    method: "POST",
+function requestEnd(staff_id) {
+  return fetch("http://localhost:8000/api/attendance", {
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
@@ -9,9 +9,9 @@ function requestStart(staff_id) {
     .then((response) => response.json())
     .then((data) => {
       if (data.message === "success") {
-        console.log("出勤に成功しました");
+        console.log("退勤に成功しました");
       } else {
-        alert("出勤に失敗しました");
+        alert("退勤に失敗しました");
       }
     })
     .catch((error) => {
@@ -19,4 +19,4 @@ function requestStart(staff_id) {
     });
 }
 
-export default requestStart;
+export default requestEnd;

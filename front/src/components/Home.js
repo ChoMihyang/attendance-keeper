@@ -36,13 +36,13 @@ function Home() {
     <div>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <TabList onChange={handleChange}>
             <Tab label="Home" value="1" />
             {staff.auth === "admin" && <Tab label="社員管理" value="2" />}
           </TabList>
         </Box>
         <TabPanel value="1">
-          <AttendanceButton todayAttendance={staff.data} />
+          <AttendanceButton staffId={staff_id} todayAttendance={staff.data} />
           {staff.auth === "admin" && (
             <Button
               component={Link}
