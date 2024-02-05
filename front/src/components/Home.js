@@ -8,6 +8,7 @@ import requestAttendanceOne from "../api/requestAttendanceOne";
 import AttendanceList from "./AttendanceList";
 import AttendanceListAll from "./AttendanceList/AttendanceListAll";
 import { styled } from "@mui/system";
+import { useLocation } from "react-router-dom";
 
 const StyledButtons = styled("div")({
   display: "flex",
@@ -16,15 +17,19 @@ const StyledButtons = styled("div")({
 });
 
 function Home() {
-  const HOME_TAB = "1";
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const menuParam = params.get("menu") || "1";
+
   const { staff_id } = useParams();
-  const [value, setValue] = useState(HOME_TAB);
+  const [value, setValue] = useState(menuParam);
   const [staff, setStaff] = useState(null);
   const [attendance, setAttendance] = useState([]);
   const navigate = useNavigate();
 
   const handleChange = (_, newValue) => {
     setValue(newValue);
+    navigate(`/${staff_id}?menu=${newValue}`);
   };
 
   useEffect(() => {
