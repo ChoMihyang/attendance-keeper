@@ -5,10 +5,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Button
 } from "@mui/material";
 import { styled } from "@mui/system";
 import requestAttendanceAll from "../../api/requestAttendanceAll";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 
 const StyledTableHead = styled(TableCell)({
   fontSize: "1.2rem",
@@ -33,6 +36,7 @@ function AttendanceListAll() {
       <Table>
         <TableHead>
           <TableRow>
+            <StyledTableHead>番号</StyledTableHead>
             <StyledTableHead>Staff ID</StyledTableHead>
             <StyledTableHead>氏名</StyledTableHead>
             <StyledTableHead>退勤時間</StyledTableHead>
@@ -41,13 +45,14 @@ function AttendanceListAll() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {attendanceAll.map((row) => (
-            <TableRow key={row.date}>
+          {attendanceAll.map((row, index) => (
+            <TableRow key={index}>
+              <StyledTableCell>{index + 1}</StyledTableCell>
               <StyledTableCell>{row.staff_id}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
               <StyledTableCell>{row.attendance_start_time}</StyledTableCell>
               <StyledTableCell>{row.attendance_end_time}</StyledTableCell>
-              <StyledTableCell>Detail ▶</StyledTableCell>
+              <StyledTableCell><Button component={Link} to="/detail">詳細を見る ▶</Button></StyledTableCell>
             </TableRow>
           ))}
         </TableBody>
