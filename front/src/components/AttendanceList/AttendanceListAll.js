@@ -14,12 +14,17 @@ import Detail from "../Detail";
 import requestAccount from "../../api/requestAccount";
 
 const StyledTableHead = styled(TableCell)({
-  fontSize: "1.2rem",
+  fontSize: "1.4rem",
   fontWeight: "bold",
+  fontFamily: "noto sans jp",
+  textAlign: "center",
 });
 const StyledTableCell = styled(TableCell)({
-  fontSize: "1.2rem",
+  fontSize: "1.4rem",
+  fontFamily: "noto sans jp",
+  textAlign: "center",
 });
+
 
 function AttendanceListAll() {
   const [attendance, setAttendance] = useState([]);
@@ -64,7 +69,7 @@ function AttendanceListAll() {
             <StyledTableHead>番号</StyledTableHead>
             <StyledTableHead>Staff ID</StyledTableHead>
             <StyledTableHead>氏名</StyledTableHead>
-            <StyledTableHead>退勤時間</StyledTableHead>
+            <StyledTableHead>出勤時間</StyledTableHead>
             <StyledTableHead>退勤時間</StyledTableHead>
             <StyledTableHead></StyledTableHead>
           </TableRow>
@@ -89,8 +94,8 @@ function AttendanceListAll() {
                 <StyledTableCell>
                   <Link
                     onClick={handelDetail}
-                    to={`/detail?staff_id=${detail_staff_id}`}
-                    state={{ staff_id }}
+                    to={`/detail?staff_id=${detail_staff_id}&name=${name}`}
+                    state={{ staff_id, name }}
                   >
                     詳細を見る ▶
                   </Link>

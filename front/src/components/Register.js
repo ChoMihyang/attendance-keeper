@@ -39,7 +39,7 @@ function Register() {
   return (
     <Container maxWidth="sm">
       <div>
-        <h1>社員登録</h1>
+        <h1>新規登録</h1>
         <form onSubmit={handleSubmit}>
           <TextField
             name="name"
