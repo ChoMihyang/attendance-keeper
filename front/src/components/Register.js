@@ -9,11 +9,13 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [name, setName] = useState("");
   const [staffId, setStaffId] = useState("");
   const [auth, setAuth] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     if (event.target.name === "name") {
@@ -31,14 +33,13 @@ function Register() {
       name: name,
       staff_id: staffId,
       auth: auth,
-      password: "000000",
     });
   };
 
   return (
     <Container maxWidth="sm">
       <div>
-        <h1>Register</h1>
+        <h1>社員登録</h1>
         <form onSubmit={handleSubmit}>
           <TextField
             name="name"
@@ -83,14 +84,21 @@ function Register() {
             </RadioGroup>
           </FormControl>
           <br />
-          {/* TODO: Link to /login */}
           <Button
             type="submit"
             variant="contained"
             size="large"
-            sx={{ width: "20rem", height: "3.2rem", my: "3rem" }}
+            sx={{ width: "20rem", height: "3.2rem", marginTop: "3rem" }}
           >
             新規登録を完了する
+          </Button>
+          <Button
+            onClick={() => navigate(-1)}
+            variant="outlined"
+            size="large"
+            sx={{ width: "20rem", height: "3.2rem", marginTop: "1rem" }}
+          >
+            ホーム画面に戻る
           </Button>
         </form>
       </div>
@@ -108,10 +116,12 @@ function requestRegisterData(registerData) {
   })
     .then((response) => response.json())
     .then((data) => {
-      if(data.message === "success"){
-        alert("登録が完了しました。初期パスワードは'000000'です。ログイン画面からログインしパスワードをご変更ください。");
+      if (data.message === "success") {
+        alert(
+          "登録が完了しました。初期パスワードは'000000'です。ログイン画面からログインしパスワードをご変更ください。"
+        );
         // TODO: Home画面に戻る
-      }else{
+      } else {
         alert("スタッフIDをもう一度ご確認ください。");
       }
     })
