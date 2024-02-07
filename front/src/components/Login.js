@@ -12,6 +12,14 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import requestLoginData from "../api/requestLoginData";
 import { useNavigate } from "react-router-dom";
+import { styled } from "@mui/system";
+
+const StyledH1 = styled("h1")({
+  fontSize: "2.5rem",
+  fontWeight: "bold",
+  fontFamily: "noto sans jp",
+  textAlign: "center",
+});
 
 function Login() {
   const [staffId, setStaffId] = useState("");
@@ -48,24 +56,24 @@ function Login() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container style={{ width: "23rem" }}>
       <div>
-        <h1>Login</h1>
-        <form onSubmit={handleSubmit}>
+        <StyledH1>ログイン</StyledH1>
+        <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
           <TextField
             type="text"
             name="staffId"
             value={staffId}
             onChange={handleChange}
             id="outlined-basic"
-            label="Staff ID"
+            label="社員 ID"
             variant="outlined"
             sx={{ width: "20rem", my: "0.5rem" }}
           />
           <br />
           <FormControl sx={{ width: "20rem" }} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">
-              Password
+              パスワード
             </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
@@ -96,7 +104,7 @@ function Login() {
             size="large"
             sx={{ width: "20rem", height: "3.2rem", my: "3rem" }}
           >
-            ログイン
+            ログインへ進む
           </Button>
         </form>
       </div>
