@@ -127,7 +127,7 @@ function requestRegisterData(registerData) {
         alert(
           "登録が完了しました。初期パスワードは'000000'です。ログイン画面からログインしパスワードをご変更ください。"
         );
-        // TODO: Home画面に戻る
+        window.location.href = "/login";
       } else {
         alert("氏名または社員IDをもう一度ご確認ください。");
       }
