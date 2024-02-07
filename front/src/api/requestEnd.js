@@ -1,5 +1,5 @@
 function requestEnd(staff_id) {
-  return fetch("http://localhost:8000/api/attendance", {
+  return fetch(`${process.env.REACT_APP_API_URL}/attendance`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 function requestStart(staff_id) {
-  fetch("http://localhost:8000/api/attendance", {
+  fetch(`${process.env.REACT_APP_API_URL}/attendance`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
