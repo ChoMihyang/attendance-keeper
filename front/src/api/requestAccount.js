@@ -1,5 +1,5 @@
 async function requestAccount(staff_id) {
-  return await fetch(`http://localhost:8000/api/account/${staff_id}`, {
+  return await fetch(`${process.env.REACT_APP_API_URL}/account/${staff_id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
