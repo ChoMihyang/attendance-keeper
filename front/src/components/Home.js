@@ -13,7 +13,7 @@ import { useLocation } from "react-router-dom";
 const StyledButtons = styled("div")({
   display: "flex",
   justifyContent: "flex-end",
-  marginBottom: "3rem",
+  marginBottom: "0.5rem",
 });
 
 function Home() {

@@ -43,10 +43,10 @@ function Detail() {
 
   const StyledTitle = styled("div")({
     fontFamily: "noto sans jp",
-    fontSize: "1.6rem",
+    fontSize: "1.7rem",
     border: "1px solid #",
     borderRadius: "20px",
-    backgroundColor: "#B4D4FF",
+    backgroundColor: "#86B6F6",
     padding: "1rem",
     margin: "2rem",
   });
