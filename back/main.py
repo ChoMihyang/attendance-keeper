@@ -45,16 +45,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.exception_handler(RequestValidationError)
-async def handler(request:Request, exc:RequestValidationError):
+async def handler(request: Request, exc: RequestValidationError):
     print(exc)
     return JSONResponse(content={}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
 
 class Staff(BaseModel):
     name: str
     staff_id: str
     auth: str
-    password: str
 
 
 class LoginData(BaseModel):
@@ -62,15 +63,8 @@ class LoginData(BaseModel):
     password: str
 
 
-class StaffId(BaseModel):
-    staff_id: int
-
-
 class Attendance(BaseModel):
-    staff_id: int
-    date: str
-    attendance_start_time: str
-    attendance_end_time: str
+    staff_id: str
 
 
 @app.get("/")
@@ -79,11 +73,14 @@ async def root():
 
 # スタッフを登録するAPI作成
 # TODO: ランダムパスワードの作成する
+
+
 @app.post("/api/register")
 async def register_staff(body: Staff, status_code=status.HTTP_201_CREATED):
     try:
+        password = '000000'
         sql = "INSERT INTO staff (name, staff_id, auth, password) VALUES (%s, %s, %s, %s)"
-        cur.execute(sql, (body.name, body.staff_id, body.auth, body.password))
+        cur.execute(sql, (body.name, body.staff_id, body.auth, password))
         conn.commit()
     except Exception as e:
         print("error", e)
@@ -109,9 +106,7 @@ async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
         cur.execute(sql)
         response = cur.fetchone()
         if response['password'] != body.password:
-            return {
-                "message": "IDまたはパスワードが間違っています"
-            }
+            return {"message": "failed"}
 
         return {"message": "success"}
     except Exception as e:
@@ -123,27 +118,49 @@ async def login_staff(body: LoginData, status_code=status.HTTP_200_OK):
 
 
 # スタッフの権限情報を取得するAPI作成
-@app.get("/api/account")
-async def get_account(body: StaffId, status_code=status.HTTP_200_OK):
+@app.get("/api/account/{staff_id}")
+async def get_account(staff_id, status_code=status.HTTP_200_OK):
     try:
-        sql = "SELECT auth FROM staff WHERE staff_id = {}".format(
-            body.staff_id)
+        sql = "SELECT auth FROM staff WHERE staff.staff_id = {}".format(
+            staff_id)
         cur.execute(sql)
         response = cur.fetchone()
+
+        auth = response['auth']
+
+        today_start_time = None
+        today_end_time = None
+
+        sql = "SELECT attendance_start_time, attendance_end_time FROM attendance WHERE staff_id = {} AND date = '{}'".format(
+            staff_id, datetime.now().strftime('%Y-%m-%d'))
+        cur.execute(sql)
+        response = cur.fetchone()
+
+        if response:
+            today_start_time = response['attendance_start_time']
+            today_end_time = response['attendance_end_time']
+
     except Exception as e:
         print("error", e)
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="権限取得に失敗しました"
+            detail="アカウント情報取得に失敗しました"
         )
+
     return {
-        "message": "権限取得に成功しました",
+        "message": "アカウント情報取得に成功しました",
         "staff": {
-            "auth": response
+            "auth": auth,
+            "data": {
+                "today_start_time": today_start_time,
+                "today_end_time": today_end_time,
+            }
         }
     }
 
 # 出勤時間を記録するAPI作成
+
+
 @app.post("/api/attendance")
 async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
     try:
@@ -159,15 +176,12 @@ async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
             detail="出勤に失敗しました"
         )
     return {
-        "message": "出勤に成功しました",
-        "attendance": {
-            "date": date,
-            "attendance_start_time": start_datetime,
-            "attendance_end_time": body.attendance_end_time
-        }
+        "message": "success"
     }
 
 # 退勤時間を記録するAPI作成
+
+
 @app.patch("/api/attendance")
 async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
     try:
@@ -176,6 +190,11 @@ async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
         sql = "UPDATE attendance SET attendance_end_time = %s WHERE staff_id = %s AND date = %s"
         cur.execute(sql, (end_datetime, body.staff_id, date))
         conn.commit()
+
+        sql = "SELECT attendance_end_time FROM attendance WHERE staff_id = {} AND date = '{}'".format(
+            body.staff_id, date)
+        cur.execute(sql)
+        response = cur.fetchone()
     except Exception as e:
         print("error", e)
         raise HTTPException(
@@ -183,12 +202,8 @@ async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
             detail="退勤に失敗しました"
         )
     return {
-        "message": "退勤に成功しました",
-        "attendance": {
-            "date": date,
-            "attendance_start_time": body.attendance_start_time,
-            "attendance_end_time": end_datetime
-        }
+        "message": "success",
+        "attendance_end_time": response['attendance_end_time']
     }
 
 
@@ -197,7 +212,7 @@ async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
 async def get_attendance_all():
     try:
         date = datetime.now().strftime('%Y-%m-%d')
-        sql = "SELECT staff.name, attendance.staff_id, attendance.attendance_start_time, attendance.attendance_end_time FROM attendance LEFT OUTER JOIN staff ON staff.staff_id = attendance.staff_id where date = {}".format(
+        sql = "SELECT staff.name, attendance.staff_id, attendance.attendance_start_time, attendance.attendance_end_time FROM attendance LEFT OUTER JOIN staff ON staff.staff_id = attendance.staff_id WHERE date = '{}' ORDER BY date DESC".format(
             date)
         cur.execute(sql)
         response = cur.fetchall()
@@ -209,7 +224,6 @@ async def get_attendance_all():
         )
     return {
         "message": "出退勤情報取得に成功しました",
-
         "result": response
     }
 
@@ -219,7 +233,7 @@ async def get_attendance_all():
 @app.get("/api/attendance/{staff_id}")
 async def get_attendance_one(staff_id: int):
     try:
-        sql = "SELECT date, attendance_start_time, attendance_end_time FROM attendance WHERE staff_id = {}".format(
+        sql = "SELECT date, attendance_start_time, attendance_end_time FROM attendance WHERE staff_id = {} ORDER BY date DESC".format(
             staff_id)
         cur.execute(sql)
         response = cur.fetchall()
