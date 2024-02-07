@@ -10,24 +10,45 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useEffect, useState } from "react";
+import requestAttendanceOne from "../api/requestAttendanceOne";
 
 function Detail() {
+  const [attendance, setAttendance] = useState([]);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const staffIdParam = params.get("staff_id");
+  const detailStaffId = params.get("staff_id");
+  const detailName = params.get("name");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    async function fetchData() {
+      const data = await requestAttendanceOne(detailStaffId);
+      setAttendance(data.result);
+    }
+    fetchData();
+  }, []);
+
   const StyledTableHead = styled(TableCell)({
-    fontSize: "1.2rem",
+    fontSize: "1.4rem",
     fontWeight: "bold",
+    fontFamily: "noto sans jp",
+    textAlign: "center",
   });
   const StyledTableCell = styled(TableCell)({
-    fontSize: "1.2rem",
+    fontSize: "1.4rem",
+    fontFamily: "noto sans jp",
+    textAlign: "center",
   });
-  const StyledSpan = styled("span")({
-    fontSize: "1.5rem",
-    marginRight: "1.5rem",
-    marginBottom: "3rem",
+
+  const StyledTitle = styled("div")({
+    fontFamily: "noto sans jp",
+    fontSize: "1.6rem",
+    border: "1px solid #",
+    borderRadius: "20px",
+    backgroundColor: "#B4D4FF",
+    padding: "1rem",
+    margin: "2rem",
   });
 
   return (
@@ -41,29 +62,33 @@ function Detail() {
         >
           <ArrowBackIosNewIcon />
         </IconButton>
-        <div>
-          <StyledSpan>社員 ID:{staffIdParam}</StyledSpan>
-          <StyledSpan>氏名</StyledSpan>
-        </div>
-        <TableContainer>
-          <Table>
+        <StyledTitle>
+          <span>{detailName}（{detailStaffId}） さんの勤怠一覧</span>
+        </StyledTitle>
+        <TableContainer sx={{ height: 650 }}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 <StyledTableHead>番号</StyledTableHead>
                 <StyledTableHead>日付</StyledTableHead>
-                <StyledTableHead>退勤時間</StyledTableHead>
+                <StyledTableHead>出勤時間</StyledTableHead>
                 <StyledTableHead>退勤時間</StyledTableHead>
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* {data.map((row, index) => (
-              <TableRow key={index}>
-                <StyledTableCell>{index + 1}</StyledTableCell>
-                <StyledTableCell>{row.date}</StyledTableCell>
-                <StyledTableCell>{row.attendance_start_time}</StyledTableCell>
-                <StyledTableCell>{row.attendance_end_time}</StyledTableCell>
-              </TableRow>
-            ))} */}
+              {attendance.map(
+                (
+                  { date, attendance_start_time, attendance_end_time },
+                  index
+                ) => (
+                  <TableRow key={index}>
+                    <StyledTableCell>{index + 1}</StyledTableCell>
+                    <StyledTableCell>{date}</StyledTableCell>
+                    <StyledTableCell>{attendance_start_time}</StyledTableCell>
+                    <StyledTableCell>{attendance_end_time}</StyledTableCell>
+                  </TableRow>
+                )
+              )}
             </TableBody>
           </Table>
         </TableContainer>
