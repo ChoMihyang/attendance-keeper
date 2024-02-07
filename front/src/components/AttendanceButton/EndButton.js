@@ -6,7 +6,8 @@ const StyledButton = styled(Button)({
   borderRadius: '50%', 
   width: '200px', 
   height: '200px',
-  fontSize: '1.5rem', 
+  fontSize: '1.6rem', 
+  marginLeft: '20%',
 });
 
 function EndButton({ disabled, staffId }) {

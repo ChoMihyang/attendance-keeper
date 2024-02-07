@@ -10,6 +10,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { styled } from "@mui/system";
 
 function Register() {
   const [name, setName] = useState("");
@@ -36,72 +37,78 @@ function Register() {
     });
   };
 
+  const StyledH1 = styled("h1")({
+    fontSize: "2.5rem",
+    fontWeight: "bold",
+    fontFamily: "noto sans jp",
+    textAlign: "center",
+  });
+
   return (
-    <Container maxWidth="sm">
-      <div>
-        <h1>新規登録</h1>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            name="name"
-            value={name}
+    <Container style={{ width: "23rem" }}>
+      <StyledH1>新規登録</StyledH1>
+      <form onSubmit={handleSubmit} style={{ textAlign: "center" }}>
+        <TextField
+          name="name"
+          value={name}
+          onChange={handleChange}
+          id="outlined-basic"
+          label="氏名"
+          variant="outlined"
+          sx={{ width: "20rem", my: "0.5rem" }}
+        />
+        <TextField
+          name="staffId"
+          value={staffId}
+          onChange={handleChange}
+          id="outlined-basic"
+          label="社員 ID"
+          variant="outlined"
+          sx={{ width: "20rem", my: "0.5rem" }}
+        />
+        <br />
+        <FormControl style={{ textAlign: "left", width: "100%" }}>
+          <FormLabel id="demo-radio-buttons-group-label">区分</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="staff"
+            name="auth"
+            value={auth}
             onChange={handleChange}
-            id="outlined-basic"
-            label="Name"
-            variant="outlined"
-            sx={{ width: "20rem", my: "0.5rem" }}
-          />
-          <TextField
-            name="staffId"
-            value={staffId}
-            onChange={handleChange}
-            id="outlined-basic"
-            label="Staff ID"
-            variant="outlined"
-            sx={{ width: "20rem", my: "0.5rem" }}
-          />
-          <br />
-          <FormControl sx={{ my: "0.5rem" }}>
-            <FormLabel id="demo-radio-buttons-group-label">区分</FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="staff"
-              name="auth"
-              value={auth}
-              onChange={handleChange}
-            >
-              <FormControlLabel
-                value="staff"
-                control={<Radio />}
-                label="通常"
-                sx={{ width: "10rem" }}
-              />
-              <FormControlLabel
-                value="admin"
-                control={<Radio />}
-                label="管理者"
-              />
-            </RadioGroup>
-          </FormControl>
-          <br />
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            sx={{ width: "20rem", height: "3.2rem", marginTop: "3rem" }}
+            style={{ justifyContent: "space-around" }}
           >
-            新規登録を完了する
-          </Button>
-          <Button
-            onClick={() => navigate(-1)}
-            variant="outlined"
-            size="large"
-            sx={{ width: "20rem", height: "3.2rem", marginTop: "1rem" }}
-          >
-            ホーム画面に戻る
-          </Button>
-        </form>
-      </div>
+            <FormControlLabel value="staff" control={<Radio />} label="通常" />
+            <FormControlLabel
+              value="admin"
+              control={<Radio />}
+              label="管理者"
+            />
+          </RadioGroup>
+        </FormControl>
+        <br />
+        <Button
+          type="submit"
+          variant="contained"
+          size="large"
+          sx={{ width: "20rem", height: "3.2rem", marginTop: "3rem" }}
+        >
+          新規登録を完了する
+        </Button>
+        <Button
+          onClick={() => navigate(-1)}
+          variant="outlined"
+          size="large"
+          sx={{
+            width: "20rem",
+            height: "3.2rem",
+            marginTop: "1rem",
+            marginBottom: "3rem",
+          }}
+        >
+          ホーム画面に戻る
+        </Button>
+      </form>
     </Container>
   );
 }
@@ -122,7 +129,7 @@ function requestRegisterData(registerData) {
         );
         // TODO: Home画面に戻る
       } else {
-        alert("スタッフIDをもう一度ご確認ください。");
+        alert("氏名または社員IDをもう一度ご確認ください。");
       }
     })
     .catch((error) => {

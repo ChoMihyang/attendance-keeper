@@ -10,36 +10,43 @@ function AttendanceButton({
   const isEndButtonDisabled = !(
     today_start_time !== null && today_end_time === null
   );
-  const StyledButtons = styled("div")({
+  const StyledDiv = styled("div")({
     borderRadius: "20px",
     border: "1px solid #C7C8CC",
+    fontFamily: "noto sans jp",
     padding: "20px",
     margin: "50px 0",
   });
+  const StyledH1 = styled("h1")({
+    fontFamily: "noto sans jp",
+    fontSize: "3rem",
+  });
+
   const StyledTime = styled("span")({
     fontSize: "3rem",
     margin: "0 80px",
   });
+
   return (
     <div>
-      {!isStartButtonDisabled && <h1>おはようございます！🌞</h1>}
+      {!isStartButtonDisabled && <StyledH1>おはようございます！🌞</StyledH1>}
       {isStartButtonDisabled && isEndButtonDisabled && (
-        <h1>お疲れさまでした！🙇🏻‍♀️</h1>
+        <StyledH1>お疲れさまでした！🙇🏻‍♀️</StyledH1>
       )}
-      <StyledButtons>
-        <StartButton staffId={staffId} disabled={isStartButtonDisabled} />
-        {today_start_time !== null ? (
-          <StyledTime>{today_start_time}</StyledTime>
-        ) : (
-          <StyledTime>--:--:--</StyledTime>
-        )}
-        <EndButton staffId={staffId} disabled={isEndButtonDisabled} />
-        {today_start_time !== null ? (
-          <StyledTime>{today_end_time}</StyledTime>
-        ) : (
-          <StyledTime>--:--:--</StyledTime>
-        )}
-      </StyledButtons>
+      <StyledDiv>
+          <StartButton staffId={staffId} disabled={isStartButtonDisabled} />
+          {today_start_time !== null ? (
+            <StyledTime>{today_start_time}</StyledTime>
+          ) : (
+            <StyledTime>--:--:--</StyledTime>
+          )}
+          <EndButton staffId={staffId} disabled={isEndButtonDisabled} />
+          {today_start_time !== null ? (
+            <StyledTime>{today_end_time}</StyledTime>
+          ) : (
+            <StyledTime>--:--:--</StyledTime>
+          )}
+      </StyledDiv>
     </div>
   );
 }
