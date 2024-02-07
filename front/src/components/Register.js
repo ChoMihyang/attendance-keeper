@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/system";
+import requestRegister from "../api/requestRegister";
 
 function Register() {
   const [name, setName] = useState("");
@@ -30,7 +31,7 @@ function Register() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    requestRegisterData({
+    requestRegister({
       name: name,
       staff_id: staffId,
       auth: auth,
@@ -72,13 +73,17 @@ function Register() {
           <RadioGroup
             row
             aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="staff"
+            defaultValue="normal"
             name="auth"
             value={auth}
             onChange={handleChange}
             style={{ justifyContent: "space-around" }}
           >
-            <FormControlLabel value="staff" control={<Radio />} label="通常" />
+            <FormControlLabel
+              value="normal"
+              control={<Radio />}
+              label="一般社員"
+            />
             <FormControlLabel
               value="admin"
               control={<Radio />}
@@ -113,27 +118,4 @@ function Register() {
   );
 }
 
-function requestRegisterData(registerData) {
-  fetch("http://localhost:8000/api/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(registerData),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.message === "success") {
-        alert(
-          "登録が完了しました。初期パスワードは'000000'です。ログイン画面からログインしパスワードをご変更ください。"
-        );
-        window.location.href = "/login";
-      } else {
-        alert("氏名または社員IDをもう一度ご確認ください。");
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
 export default Register;

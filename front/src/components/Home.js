@@ -52,7 +52,7 @@ function Home() {
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange}>
-            <Tab label="Home" value="1" />
+            <Tab label="ホーム" value="1" />
             {staff.auth === "admin" && <Tab label="勤怠管理" value="2" />}
           </TabList>
         </Box>

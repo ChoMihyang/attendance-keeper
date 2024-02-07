@@ -1,4 +1,5 @@
 async function requestLoginData(loginData) {
+  console.log(loginData);
   return await fetch("http://localhost:8000/api/login", {
     method: "POST",
     headers: {
