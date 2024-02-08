@@ -68,7 +68,7 @@ function Login() {
             id="outlined-basic"
             label="社員 ID"
             variant="outlined"
-            sx={{ width: "20rem", my: "0.5rem" }}
+            sx={{ width: "20rem", my: "1rem" }}
           />
           <br />
           <FormControl sx={{ width: "20rem" }} variant="outlined">
