@@ -73,14 +73,14 @@ function Register() {
           <RadioGroup
             row
             aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="normal"
+            defaultValue="staff"
             name="auth"
             value={auth}
             onChange={handleChange}
             style={{ justifyContent: "space-around" }}
           >
             <FormControlLabel
-              value="normal"
+              value="staff"
               control={<Radio />}
               label="一般社員"
             />
