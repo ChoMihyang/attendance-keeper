@@ -164,10 +164,11 @@ async def get_account(staff_id, status_code=status.HTTP_200_OK):
 @app.post("/api/attendance")
 async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
     try:
-        date = datetime.now().strftime('%Y-%m-%d')
-        start_datetime = datetime.now().strftime('%H:%M:%S')
+        current_datetime = datetime.now()
+        date = current_datetime.strftime('%Y-%m-%d')
+        start_attend_time = current_datetime.strftime('%H:%M:%S')
         sql = "INSERT INTO attendance (staff_id, date, attendance_start_time) VALUES (%s, %s, %s)"
-        cur.execute(sql, (body.staff_id, date, start_datetime))
+        cur.execute(sql, (body.staff_id, date, start_attend_time))
         conn.commit()
     except Exception as e:
         print("error", e)
@@ -185,10 +186,11 @@ async def attend_start(body: Attendance, status_code=status.HTTP_201_CREATED):
 @app.patch("/api/attendance")
 async def attend_end(body: Attendance, status_code=status.HTTP_200_OK):
     try:
-        date = datetime.now().strftime('%Y-%m-%d')
-        end_datetime = datetime.now().strftime('%H:%M:%S')
+        current_datetime = datetime.now()
+        date = current_datetime.strftime('%Y-%m-%d')
+        end_attend_time = current_datetime.strftime('%H:%M:%S')
         sql = "UPDATE attendance SET attendance_end_time = %s WHERE staff_id = %s AND date = %s"
-        cur.execute(sql, (end_datetime, body.staff_id, date))
+        cur.execute(sql, (end_attend_time, body.staff_id, date))
         conn.commit()
 
         sql = "SELECT attendance_end_time FROM attendance WHERE staff_id = {} AND date = '{}'".format(
