@@ -81,7 +81,7 @@ function AttendanceListAll() {
           <TableHead>
             <TableRow>
               <StyledTableHead>番号</StyledTableHead>
-              <StyledTableHead>Staff ID</StyledTableHead>
+              <StyledTableHead>社員 ID</StyledTableHead>
               <StyledTableHead>氏名</StyledTableHead>
               <StyledTableHead>出勤時間</StyledTableHead>
               <StyledTableHead>退勤時間</StyledTableHead>
